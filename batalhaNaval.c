@@ -16,24 +16,29 @@ int main() {
         }
     }
 
-    // Coordenadas iniciais dos navios
+    // -----------------------------
+    // POSICIONAMENTO DOS NAVIOS
+    // -----------------------------
+
+    // 1. Navio Horizontal
     int linha_horizontal = 2;
     int coluna_horizontal = 4;
 
-    int linha_vertical = 5;
-    int coluna_vertical = 7;
-
-    // Validação: garantir que os navios caibam no tabuleiro
-    if (coluna_horizontal + TAMANHO_NAVIO <= TAMANHO_TABULEIRO &&
-        linha_vertical + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
-
-        // Posicionar navio horizontal
+    if (coluna_horizontal + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
         for (int i = 0; i < TAMANHO_NAVIO; i++) {
             tabuleiro[linha_horizontal][coluna_horizontal + i] = NAVIO;
         }
+    } else {
+        printf("Erro: Navio horizontal não cabe no tabuleiro.\n");
+        return 1;
+    }
 
-        // Validação de sobreposição
-        int sobreposicao = 0;
+    // 2. Navio Vertical
+    int linha_vertical = 5;
+    int coluna_vertical = 7;
+
+    int sobreposicao = 0;
+    if (linha_vertical + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
         for (int i = 0; i < TAMANHO_NAVIO; i++) {
             if (tabuleiro[linha_vertical + i][coluna_vertical] == NAVIO) {
                 sobreposicao = 1;
@@ -41,23 +46,82 @@ int main() {
             }
         }
 
-        // Se não houver sobreposição, posiciona o navio vertical
         if (!sobreposicao) {
             for (int i = 0; i < TAMANHO_NAVIO; i++) {
                 tabuleiro[linha_vertical + i][coluna_vertical] = NAVIO;
             }
         } else {
-            printf("Erro: Os navios se sobrepõem!\n");
+            printf("Erro: Navio vertical sobrepõe outro navio.\n");
+            return 1;
+        }
+    } else {
+        printf("Erro: Navio vertical não cabe no tabuleiro.\n");
+        return 1;
+    }
+
+    // 3. Navio Diagonal Principal (↘)
+    int linha_diag1 = 0;
+    int coluna_diag1 = 0;
+    sobreposicao = 0;
+
+    if (linha_diag1 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO &&
+        coluna_diag1 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
+
+        for (int i = 0; i < TAMANHO_NAVIO; i++) {
+            if (tabuleiro[linha_diag1 + i][coluna_diag1 + i] == NAVIO) {
+                sobreposicao = 1;
+                break;
+            }
+        }
+
+        if (!sobreposicao) {
+            for (int i = 0; i < TAMANHO_NAVIO; i++) {
+                tabuleiro[linha_diag1 + i][coluna_diag1 + i] = NAVIO;
+            }
+        } else {
+            printf("Erro: Navio diagonal principal sobrepõe outro navio.\n");
             return 1;
         }
 
     } else {
-        printf("Erro: Coordenadas inválidas. Os navios não cabem no tabuleiro.\n");
+        printf("Erro: Navio diagonal principal não cabe no tabuleiro.\n");
         return 1;
     }
 
-    // Exibir o tabuleiro
-    printf("Tabuleiro:\n");
+    // 4. Navio Diagonal Secundária (↙)
+    int linha_diag2 = 0;
+    int coluna_diag2 = 9;
+    sobreposicao = 0;
+
+    if (linha_diag2 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO &&
+        coluna_diag2 - (TAMANHO_NAVIO - 1) >= 0) {
+
+        for (int i = 0; i < TAMANHO_NAVIO; i++) {
+            if (tabuleiro[linha_diag2 + i][coluna_diag2 - i] == NAVIO) {
+                sobreposicao = 1;
+                break;
+            }
+        }
+
+        if (!sobreposicao) {
+            for (int i = 0; i < TAMANHO_NAVIO; i++) {
+                tabuleiro[linha_diag2 + i][coluna_diag2 - i] = NAVIO;
+            }
+        } else {
+            printf("Erro: Navio diagonal secundária sobrepõe outro navio.\n");
+            return 1;
+        }
+
+    } else {
+        printf("Erro: Navio diagonal secundária não cabe no tabuleiro.\n");
+        return 1;
+    }
+
+    // -----------------------------
+    // EXIBIÇÃO DO TABULEIRO
+    // -----------------------------
+
+    printf("\nTabuleiro (0 = água | 3 = navio):\n\n");
     for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
         for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
             printf("%d ", tabuleiro[i][j]);
@@ -67,3 +131,4 @@ int main() {
 
     return 0;
 }
+
